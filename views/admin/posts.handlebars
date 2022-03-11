@@ -3,3 +3,21 @@
 <a href="/admin/posts/add">
     <button class="btn btn-success">New Post</button>
 </a>
+
+{{#each posts}}
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h3>{{title}}</h3>
+            <strong>{{slug}}</strong><br>
+            <small>{{create_date}}</small>
+            <h5>{{description}}</h5>
+            <p>{{content}}</p>
+            <small>{{category.nome}}</small>
+        </div>
+    </div>
+
+{{else}}
+    <h3>Nenhum post cadastrado</h3>
+
+{{/each}}

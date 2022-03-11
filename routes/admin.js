@@ -2,7 +2,10 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 require('../models/Category')
+require('../models/Posts')
 const Categoria = mongoose.model('category')
+const Post = mongoose.model('posts')
+
 
 router.get('/', (req, res) => {
     res.render('admin/index')
@@ -89,7 +92,12 @@ router.post('/category/delete', (req, res) => {
 })
 
 router.get('/posts', (req, res) => {
-    res.render('admin/posts')
+    Post.find().populate('category').sort({create_date: 'desc'}).lean().then(posts => {
+        res.render('admin/posts', {posts: posts})
+    }).catch(error => {
+        req.flash('error_msg', 'Ocorreu um erro ao listar os posts')
+        res.redirect('/admin')
+    })
 })
 
 router.get('/posts/add', (req, res) => {
@@ -99,6 +107,34 @@ router.get('/posts/add', (req, res) => {
         req.flash('error_msg', 'Erro ao carregar formulario')
         res.redirect('/admin')
     })
+})
+
+router.post('/posts/new', (req, res) => {
+    var erros = []
+
+    if(req.body.category == 0) {
+        erros.push({text: 'Categoria invalida, registre uma categoria.'})
+    }
+
+    if(erros.length > 0) {
+        res.render('admin/posts', {erros: erros})
+    }else {
+        const newPost = {
+            title: req.body.title,
+            slug: req.body.slug,
+            description: req.body.description,
+            content: req.body.content,
+            category: req.body.category
+        }
+
+        new Post(newPost).save().then(() => {
+            req.flash('success_msg', 'Post criado com sucesso')
+            res.redirect('/admin/posts')
+        }).catch(error => {
+            req.flash('error_msg', 'Ocorreu um erro ao criar o post')
+            res.redirect('/admin/posts')
+        })
+    }
 })
 
 module.exports = router
