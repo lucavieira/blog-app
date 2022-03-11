@@ -8,10 +8,6 @@ router.get('/', (req, res) => {
     res.render('admin/index')
 })
 
-router.get('/posts', (req, res) => {
-    res.send('Posts page')
-})
-
 router.get('/category', (req, res) => {
     Categoria.find().lean().then(categorias => {
         res.render('admin/category', {categorias: categorias})
@@ -79,6 +75,29 @@ router.post('/category/edit', (req, res) => {
     }).catch(error => {
         req.flash('error_msg', 'Erro ao editar a categoria')
         res.redirect('/admin/category')
+    })
+})
+
+router.post('/category/delete', (req, res) => {
+    Categoria.remove({_id: req.body.id}).then(() => {
+        req.flash('success_msg', 'Deletada com sucesso')
+        res.redirect('/admin/category')
+    }).catch(error => {
+        req.flash('error_msg', 'Erro ao deletar')
+        res.redirect('/admin/category')
+    })
+})
+
+router.get('/posts', (req, res) => {
+    res.render('admin/posts')
+})
+
+router.get('/posts/add', (req, res) => {
+    Categoria.find().lean().then(categorias => {
+        res.render('admin/addposts', {categorias: categorias})
+    }).catch(error => {
+        req.flash('error_msg', 'Erro ao carregar formulario')
+        res.redirect('/admin')
     })
 })
 

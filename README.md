@@ -13,6 +13,8 @@ App to manage your blog and your posts. -->
     * Handlebars
     * Body-Parser
     * Mongoose
+    * session
+    * connect flash
   * Bootstrap
 
 ## Status Application
