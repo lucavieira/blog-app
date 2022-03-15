@@ -13,7 +13,13 @@
             <small>{{create_date}}</small>
             <h5>{{description}}</h5>
             <p>{{content}}</p>
-            <small>{{category.nome}}</small>
+            <small>{{category.nome}}</small><br>
+            <a href="/admin/posts/edit/{{_id}}">
+                <button class="btn btn-success mt-4">Edit</button>
+            </a>
+            <a href="/admin/posts/delete/{{_id}}">
+                <button class="btn btn-danger mt-4">Delete</button>
+            </a>
         </div>
     </div>
 
