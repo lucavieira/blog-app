@@ -8,6 +8,8 @@ const path = require('path')
 const mongoose = require('mongoose') // Banco de Dados para armazenar os dados do app
 const session = require('express-session') // Armazena os dados da sessão no servidor, salva apenas o ID no cookie.
 const flash = require('connect-flash') // Flash para criar as mensagens e mostrar na tela apenas por um breve momento 
+require('./models/Posts')
+const Post = mongoose.model('posts')
 
 // Config's
     // Session
@@ -41,8 +43,32 @@ const flash = require('connect-flash') // Flash para criar as mensagens e mostra
         app.use(express.static(path.join(__dirname, 'public')))
 // Routes
     app.get('/', (req, res) => {
-        res.send('Coming soon...')
+        Post.find().lean().populate('category').sort({create_date: 'desc'}).then(posts => {
+            res.render('index',  {posts: posts})
+        }).catch(error => {
+            req.flash('error_msg', 'Erro interno.')
+            res.redirect('/404')
+        })
     })
+
+    app.get('/post/:slug', (req, res) => {
+        Post.findOne({slug: req.params.slug}).lean().then(post => {
+            if(post) {
+                res.render('posts/index', {post: post})
+            }else {
+                req.flash('error_msg', 'Esse Post não existe')
+                res.redirect('/')
+            }
+        }).catch(error => {
+            req.flash('error_msg', 'Erro Interno')
+            res.redirect('/')
+        })
+    })
+
+    app.get('/404', (req, res) => {
+        res.send('Error 404')
+    })
+
     app.use('/admin', admin)
 // Others
 const PORT = 5000
