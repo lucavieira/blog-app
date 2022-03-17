@@ -137,49 +137,4 @@ router.post('/posts/new', (req, res) => {
     }
 })
 
-router.get('/posts/edit/:id', (req, res) => {
-    Post.findOne({_id: req.params.id}).lean().then(posts => {
-        Categoria.find().lean().then(categorias => {
-            res.render('admin/editposts', {categorias: categorias, posts: posts})
-        }).catch(error => {
-            req.flash('error_msg', 'Ocorreu um erro ao listar as categorias')
-            res.redirect('/admin/posts')
-        })
-    }).catch(error => {
-        req.flash('error_msg', 'Erro ao carregar postagem')
-        res.redirect('/admin/posts')
-    })
-})
-
-router.post('/posts/edit', (req, res) => {
-    Post.findOne({_id:req.body.id}).then(post => {
-        post.title = req.body.title,
-        post.slug = req.body.slug,
-        post.description = req.body.description,
-        post.content = req.body.content
-        post.category = req.body.category
-
-        post.save().then(() => {
-            req.flash('success_msg', 'Post editada com sucesso')
-            res.redirect('/admin/posts')
-        }).catch(error => {
-            req.flash('error_msg', 'Erro interno')
-            res.redirect('/admin/posts')
-        })
-    }).catch(error => {
-        req.flash('error_msg', 'Erro ao salvar edição')
-        res.redirect('/admin/posts')
-    })
-})
-
-router.get('/posts/delete/:id', (req, res) => {
-    Post.remove({_id:req.params.id}).then(() => {
-        req.flash('success_msg', 'Post deletado com sucesso')
-        res.redirect('/admin/posts')
-    }).catch(error => {
-        req.flash('error_msg', 'Erro ao deletar post')
-        res.redirect('/admin/posts')
-    })
-})
-
 module.exports = router
