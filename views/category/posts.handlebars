@@ -1,0 +1,16 @@
+<h2>Posts {{category.nome}}</h2>
+
+{{#each posts}}
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h2>{{title}}</h2>
+            <p>{{description}}</p>
+            <hr>
+            <small>Publicada em - {{create_date}}</small>
+        </div>
+    </div>
+
+{{else}}
+    <h3>Não existe posts publicados com esta categoria</h3>
+{{/each}}

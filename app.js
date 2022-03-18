@@ -9,7 +9,9 @@ const mongoose = require('mongoose') // Banco de Dados para armazenar os dados d
 const session = require('express-session') // Armazena os dados da sessão no servidor, salva apenas o ID no cookie.
 const flash = require('connect-flash') // Flash para criar as mensagens e mostrar na tela apenas por um breve momento 
 require('./models/Posts')
+require('./models/Category')
 const Post = mongoose.model('posts')
+const Category =  mongoose.model('category')
 
 // Config's
     // Session
@@ -67,6 +69,34 @@ const Post = mongoose.model('posts')
 
     app.get('/404', (req, res) => {
         res.send('Error 404')
+    })
+
+    app.get('/categories', (req, res) => {
+        Category.find().lean().then(categories => {
+            res.render('category/index', {categories: categories})
+        }).catch(error => {
+            req.flash('error_msg', 'Erro ao carregar as categorias')
+            res.redirect('/')
+        })
+    })
+
+    app.get('/categories/:slug', (req, res) => {
+        Category.findOne({slug: req.params.slug}).lean().then(category => {
+            if(category) {
+                Post.find({category: category._id}).lean().then(posts => {
+                    res.render('category/posts', {posts: posts, category: category})
+                }).catch(error => {
+                    req.flash('error_msg', 'Erro ao listar posts')
+                    res.redirect('/')
+                })
+            }else {
+                req.flash('error_msg', 'Essa categoria não foi encontrada.')
+                res.redirect('/')
+            }
+        }).catch(error => {
+            req.flash('error_msg', 'Erro ao listar os posts com essa categoria')
+            res.redirect('/')
+        })
     })
     
     app.use('/admin', admin)
