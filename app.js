@@ -13,6 +13,8 @@ require('./models/Posts')
 require('./models/Category')
 const Post = mongoose.model('posts')
 const Category =  mongoose.model('category')
+const passport = require('passport')
+require('./config/auth')(passport)
 
 // Config's
     // Session
@@ -22,12 +24,17 @@ const Category =  mongoose.model('category')
             saveUninitialized: true
         })) 
 
+    // Passport
+        app.use(passport.initialize())
+        app.use(passport.session())
+
         app.use(flash())
     // Middleware
         app.use((req, res, next) => {
             // Variaveis globais que irão armazenar mensagens de sucesso ou de error
             res.locals.success_msg = req.flash('success_msg')
             res.locals.error_msg = req.flash('error_msg')
+            res.locals.error = req.flash('error')
             next()
         })
     // body-parser
