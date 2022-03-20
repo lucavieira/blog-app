@@ -4,6 +4,7 @@ const handlebars = require('express-handlebars') // Template para o front
 const body_parser = require('body-parser') // Pegar os valores do formulario
 const app = express()
 const admin = require('./routes/admin') // Rotas do Administrador
+const users = require('./routes/user') // Rotas dos Usuarios
 const path = require('path')
 const mongoose = require('mongoose') // Banco de Dados para armazenar os dados do app
 const session = require('express-session') // Armazena os dados da sessão no servidor, salva apenas o ID no cookie.
@@ -100,6 +101,7 @@ const Category =  mongoose.model('category')
     })
     
     app.use('/admin', admin)
+    app.use('/users', users)
 // Others
 const PORT = 5000
 app.listen(PORT, () => {

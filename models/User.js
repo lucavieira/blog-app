@@ -12,6 +12,11 @@ const User = new Schema({
         required: true
     },
 
+    isAdm: {
+        type: Number,
+        default: 0
+    },
+
     password: {
         type: String,
         required: true
