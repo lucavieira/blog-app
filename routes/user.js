@@ -2,7 +2,8 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 require('../models/User')
-const user = mongoose.model('users')
+const User = mongoose.model('users')
+const bcrypt = require('bcryptjs')
 
 
 router.get('/register', (req, res) => {
@@ -35,7 +36,40 @@ router.post('/register', (req, res) => {
     if(erros.length > 0) {
         res.render('users/register', {erros: erros})
     } else {
-        //Next lesson
+        User.findOne({email: req.body.email}).then(user => {
+            if(user){
+                req.flash('error_msg', 'E-mail registered')
+                res.redirect('/users/register')
+            } else {
+                const new_user = new User({
+                    name: req.body.name,
+                    email: req.body.email,
+                    password: req.body.password
+                })
+
+                bcrypt.genSalt(10, (erro, salt) => {
+                    bcrypt.hash(new_user.password, salt, (erro, hash) => {
+                        if(erro) {
+                            req.flash('error_msg', 'Internal Error')
+                            res.redirect('/')
+                        } else {
+                            new_user.password = hash
+
+                            new_user.save().then(() => {
+                                req.flash('success_msg', 'User registered')
+                                res.redirect('/')
+                            }).catch( error => {
+                                req.flash('error_msg', 'User not registered')
+                                res.redirect('/users/register')
+                            })
+                        }
+                    })
+                })
+            }
+        }).catch( error => {
+            req.flash('error_msg', 'Internal Error')
+            res.redirect('/')
+        })
     }
 })
 
