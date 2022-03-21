@@ -15,6 +15,7 @@ const Post = mongoose.model('posts')
 const Category =  mongoose.model('category')
 const passport = require('passport')
 require('./config/auth')(passport)
+const db = require('./config/db')
 
 // Config's
     // Session
@@ -45,7 +46,7 @@ require('./config/auth')(passport)
         app.engine('handlebars', handlebars.engine({defaultLayout: 'main'}))
         app.set('view engine', 'handlebars')
     // Mongoose
-        mongoose.connect('mongodb://localhost/blogapp').then(() => {
+        mongoose.connect(db.mongoURI).then(() => {
             console.log('Conectado ao banco')
         }).catch(error => {
             console.log('Error ao se conectar. ' + error)
@@ -111,7 +112,7 @@ require('./config/auth')(passport)
     app.use('/admin', admin)
     app.use('/users', users)
 // Others
-const PORT = 5000
+const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
     console.log('Server is running...')
 })
