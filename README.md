@@ -15,7 +15,17 @@ App to manage your blog and your posts. -->
     * Mongoose
     * session
     * connect flash
+    * passport
   * Bootstrap
 
 ## Status Application
-  **In progress...**
+  **Finished**
+
+## Deploy
+   Deploy feito na Heroku. Link para acessar, basta clicar <a href="https://appbloglucas.herokuapp.com/" target="_blank">aqui</a>.
+
+## Author
+  **Lucas Vieira** <br><br>
+  <a href="https://www.linkedin.com/in/lucas-vieira-dev/">
+      <img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="A letra 'i' e 'n' dentro de um quadrado azul, representando a logo da rede social LinkedIn." />
+  </a>
